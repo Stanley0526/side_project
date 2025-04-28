@@ -1,14 +1,32 @@
-// 引入自定義的 request 函式，用來發送 API 請求
-import { request } from "../utils/request";
-// 引入 getUser 和 saveUser 函式，分別用來取得當前使用者資料和儲存使用者資料
+import { auth, db } from "../firebase";
+import { updateProfile } from "firebase/auth";
+import { doc, updateDoc } from "firebase/firestore";
 import { getUser, saveUser } from "./auth";
 
-// 更改使用者資料功能
+// 更新使用者資料
 export async function changeUser(user) {
-  const response = await request(`/api/users/${getUser().id}`, {  // 發送 PUT 請求更新使用者資料
-    method: "PUT",  // 請求方法為 PUT
-    body: user,  // 傳送的資料為更新後的使用者資料
+  const currentUser = auth.currentUser;
+  if (!currentUser) {
+    throw new Error("尚未登入，無法更新使用者資料");
+  }
+
+  // 更新 Firebase Auth 資料 (例如 displayName)
+  await updateProfile(currentUser, {
+    displayName: user.username, // 可以改這裡的欄位
+    photoURL: user.photoURL || null, // 如果有照片也可以改
   });
-  saveUser(response);  // 更新使用者資料並儲存
-  return response;  // 回傳更新後的使用者資料
+
+  // 更新 Firestore 資料
+  const userRef = doc(db, "users", currentUser.uid);
+  await updateDoc(userRef, user);
+
+  // 更新 localStorage 資料
+  saveUser({
+    id: currentUser.uid,
+    email: currentUser.email,
+    username: user.username,
+    photoURL: user.photoURL || "",
+  });
+
+  return getUser();
 }
