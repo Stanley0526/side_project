@@ -1,5 +1,5 @@
 // 引入 Firebase 相關操作
-import { createPost, loadPosts, likePost, favorPost } from "@/apis/post";
+import { createPost, loadPosts, likePost, favorPost } from "../../apis/post";
 
 export const post = {
   state() {

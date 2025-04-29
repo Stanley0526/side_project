@@ -1,4 +1,4 @@
-<!-- <template>
+<template>
   <template v-if="$route.name !== 'login'">
     <header class="header">
       <NavBar />
@@ -19,16 +19,7 @@
 import "./assets/base.css";
 import NavBar from "./components/NavBar.vue";
 import TheLayout from "./components/TheLayout.vue";
-</script> -->
-
-<script setup>
-import { db } from './firebase'
-console.log('db連線成功:', db)
 </script>
-
-<template>
-  <h1>Firebase 測試 OK!</h1>
-</template>
 
 <style scoped>
 .header {

@@ -1,4 +1,4 @@
-import { db } from "@/firebase";
+import { db } from "../firebase";
 import { collection, addDoc, getDocs, updateDoc, doc, query, where } from "firebase/firestore";
 
 // 新增一篇文章

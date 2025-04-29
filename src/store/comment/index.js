@@ -1,5 +1,5 @@
 // 引入 Firebase Firestore API 函式
-import { createComment, loadComments } from "@/apis/comment";
+import { createComment, loadComments } from "../../apis/comment";
 
 export const comment = {
   state() {

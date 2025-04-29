@@ -1,4 +1,4 @@
-import { db } from "@/firebase";
+import { db } from "../firebase";
 import { collection, addDoc, getDocs, query, where, orderBy } from "firebase/firestore";
 
 // 建立一個新留言

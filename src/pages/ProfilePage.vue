@@ -49,7 +49,7 @@ import PostDetails from "../components/PostDetails.vue";
 
 import { useStore } from "vuex";
 import { computed, ref, reactive, watch } from "vue";
-import { loadPostsByMe, loadPostsLikedOrFavoredByMe } from "../apis/post";
+// import { loadPostsByMe, loadPostsLikedOrFavoredByMe } from "../apis/post";
 
 const store = useStore();
 const showPostDetails = computed(() => store.state.showPostDetails);

@@ -3,7 +3,7 @@
     <img src="../assets/phone.png" alt="" class="phoneImage" />
     <div class="loginForm">
       <img src="../assets/logo.svg" alt="" />
-      <form @submit.prevent>
+      <form @submit.prevent="isLogin ? login() : register()">
         <input type="email" placeholder="email" v-model="email" />
         <input
           v-if="!isLogin"
@@ -11,28 +11,16 @@
           placeholder="用戶名"
           v-model="username"
         />
-        <input
-          type="password"
-          placeholder="密碼"
-          v-model="password"
-        />
-        <button
-          type="submit"
-          class="loginButton"
-          @click="isLogin ? login() : register()"
-        >
+        <input type="password" placeholder="密碼" v-model="password" />
+        <button type="submit" class="loginButton">
           {{ isLogin ? "登入" : "註冊" }}
         </button>
         <p @click="isLogin = !isLogin" class="info">
-          {{
-            isLogin ? "還沒有帳號？點選註冊" : "已有帳號？點擊登入"
-          }}
+          {{ isLogin ? "還沒有帳號？點選註冊" : "已有帳號？點擊登入" }}
         </p>
         <div v-if="!isLogin" class="agreement">
-          <input
-            type="checkbox"
-            v-model="agreementChecked"
-          />勾選表示同意隱私協議和使用規範
+          <input type="checkbox" v-model="agreementChecked" />
+          勾選表示同意隱私協議和使用規範
         </div>
       </form>
     </div>
@@ -52,7 +40,7 @@ const agreementChecked = ref(false);
 
 const store = useStore();
 const router = useRouter();
- 
+
 async function register() {
   if (!agreementChecked.value) {
     alert("請先閱讀並同意隱私權協議和使用規範");
@@ -125,11 +113,7 @@ input::placeholder {
 }
 
 .loginButton {
-  background: linear-gradient(
-    89.93deg,
-    #00c2ff 0.06%,
-    #0047ff 105.68%
-  );
+  background: linear-gradient(89.93deg, #00c2ff 0.06%, #0047ff 105.68%);
   padding: 12px 0;
   color: white;
   border: none;
