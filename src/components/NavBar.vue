@@ -1,23 +1,27 @@
 <template>
   <nav class="navbar">
-    <router-link to="/"><img src="../assets/logo.svg" /></router-link>
+    <router-link to="/">
+      <img src="../assets/logo.svg" />
+    </router-link>
     <div class="searchInput">
       <input type="text" @change="searchPosts" />
       <TheIcon icon="search" />
     </div>
     <div class="navItems">
-      <router-link to="/"><TheIcon icon="home" /></router-link>
+      <router-link to="/">
+        <div>🏠</div> <!-- 先用簡單元素測試，確定 router-link 沒問題 -->
+      </router-link>
       <button @click="publishPost()">
         <TheIcon icon="publish" />
       </button>
-      <!-- dropdown -->
+
       <div class="profileDropDown">
         <TheAvatar
           :width="42"
           :height="42"
           style="cursor: pointer"
           @click="showDropdown = !showDropdown"
-          :src="user.avatar"
+          :src="user?.avatar || ''"
         />
         <div
           class="dropdownMenu"
@@ -33,6 +37,7 @@
     </div>
   </nav>
 </template>
+
 <script setup>
 import TheIcon from "./TheIcon.vue";
 import TheAvatar from "./TheAvatar.vue";

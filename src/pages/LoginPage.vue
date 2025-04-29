@@ -46,20 +46,32 @@ async function register() {
     alert("請先閱讀並同意隱私權協議和使用規範");
     return;
   }
-  await store.dispatch("registerUser", {
-    email: email.value,
-    username: username.value,
-    password: password.value,
-  });
-  router.replace("/");
+  try {
+    await store.dispatch("registerUser", {
+      email: email.value,
+      username: username.value,
+      password: password.value,
+    });
+    router.replace("/");
+  } catch (err) {
+    console.error("註冊失敗", err);
+    alert("註冊失敗：" + (err.message || "請稍後再試"));
+  }
 }
 
 async function login() {
-  await store.dispatch("loginUser", {
-    email: email.value,
-    password: password.value,
-  });
-  router.replace("/");
+  try {
+    await store.dispatch("loginUser", {
+      email: email.value,
+      password: password.value,
+    });
+    console.log("登入成功");
+
+    router.replace("/");
+  } catch (err) {
+    console.error("登入失敗", err);
+    alert("登入失敗：" + (err.message || "請稍後再試"));
+  }
 }
 </script>
 <style scoped>

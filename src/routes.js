@@ -4,7 +4,7 @@ import ProfilePage from "./pages/ProfilePage.vue";
 import ProfileEdittingPage from "./pages/ProfileEdittingPage.vue";
 import LoginPage from "./pages/LoginPage.vue";
 import { createRouter, createWebHistory } from "vue-router";
-
+import { getUser } from "./apis/auth";
 
 const routes = [
   {
@@ -39,13 +39,14 @@ const router = createRouter({
   history: createWebHistory(),
 });
 
-router.beforeEach((to) => {
-  if (to.name !== "login") {
-    return { name: "login" };
-  }
-  if (to.name === "login") {
-    return { name: "home" };
-  }
-});
+// router.beforeEach((to) => {
+//   const user = getUser();
+//   if (!user && to.name !== "login") {
+//     return { name: "login" };
+//   }
+//   if (user && to.name === "login") {
+//     return { name: "home" };
+//   }
+// });
 
 export { router };

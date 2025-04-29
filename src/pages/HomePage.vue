@@ -21,7 +21,14 @@ const showPostDetails = computed(() => store.state.showPostDetails);
 const posts = computed(() => store.state.post.list);
 
 onMounted(() => {
-  store.dispatch("loadAllPosts");
+  store.dispatch("loadAllPosts")
+    .then(() => {
+      console.log("載入的 posts：", posts.value);
+    })
+    .catch((error) => {
+      console.error("載入 posts 出錯了！", error);
+    });
 });
+
 </script>
 <style scoped></style>

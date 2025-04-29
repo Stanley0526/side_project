@@ -42,7 +42,7 @@ export const post = {
     async uploadPost({ commit, dispatch }, { imageUrl, description }) {
       await createPost(imageUrl, description);
       await dispatch("loadAllPosts");
-      commit("changeShowPostUpload", false);  // 這個 mutation 應該在另外一個 store，如 UI 控制
+      commit("changeShowPostUpload", false);
     },
     async loadAllPosts({ commit }) {
       const posts = await loadPosts();

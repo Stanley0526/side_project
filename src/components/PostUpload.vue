@@ -3,9 +3,7 @@
     <div class="postUpload">
       <label class="upload">
         <img v-if="imageObjUrl" :src="imageObjUrl" class="preview" />
-        <!-- <TheIcon v-else icon="upload-image" /> -->
-         <img v-else src="../assets/upload.png" alt="">
-        <!-- <h5 v-else>點擊上傳一張圖片</h5> -->
+        <img v-else src="../assets/upload.png" alt="">
         <input
           type="file"
           accept="image/*"
@@ -15,7 +13,7 @@
       </label>
       <div class="postContent">
         <textarea
-          :placeholder="user.username + ' ，' + '在想什麼呢?'"
+          placeholder="在想什麼呢?"
           class="postContentInput"
           v-model="description"
         ></textarea>
@@ -24,38 +22,50 @@
     </div>
   </TheModal>
 </template>
+
 <script setup>
 import TheModal from "./TheModal.vue";
-import TheIcon from "./TheIcon.vue";
 import TheButton from "./TheButton.vue";
 import { useStore } from "vuex";
 import { ref, computed } from "vue";
+import { storage } from "../firebase";
+import { ref as storageRef, uploadBytes, getDownloadURL } from "firebase/storage";
 
 const store = useStore();
-const imageObjUrl = ref("");
 
 const image = ref(null);
+const imageObjUrl = ref("");
 const description = ref("");
-
 const user = computed(() => store.state.user.user);
 
-async function handleImageUpload(e) {
-  // 只允許上傳一張圖片
+function handleImageUpload(e) {
   const imageFile = e.target.files[0];
   if (imageFile) {
-    // 圖片預覽
     imageObjUrl.value = URL.createObjectURL(imageFile);
-    // 設置圖片文件
     image.value = imageFile;
   }
 }
-function publishPost() {
-  store.dispatch("uploadPost", {
-    image: image.value,
-    description: description.value,
-  });
+
+async function publishPost() {
+  if (!image.value) return;
+
+  const filename = `${Date.now()}-${image.value.name}`;
+  const imageRef = storageRef(storage, `post-images/${filename}`);
+
+  try {
+    await uploadBytes(imageRef, image.value); // ✅ 這裡用 SDK 上傳
+    const url = await getDownloadURL(imageRef);
+
+    await store.dispatch("uploadPost", {
+      imageUrl: url,
+      description: description.value,
+    });
+  } catch (err) {
+    console.error("圖片上傳或貼文發布失敗:", err);
+  }
 }
 </script>
+
 <style scoped>
 .postUpload {
   width: 50vw;
@@ -108,11 +118,11 @@ function publishPost() {
   bottom: 18px;
 }
 
-.upload > img{
+.upload > img {
   width: 280px;
 }
 
-h5{
+h5 {
   font-size: 40px;
 }
 </style>

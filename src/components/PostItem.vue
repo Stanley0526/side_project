@@ -1,7 +1,7 @@
 <template>
   <div class="postItem">
     <img
-      :src="post.image"
+      :src="post.imageUrl"
       @click="$store.dispatch('showPostDetails', post.id)"
       alt=""
       width="100%"

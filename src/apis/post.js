@@ -1,28 +1,40 @@
 import { db } from "../firebase";
-import { collection, addDoc, getDocs, updateDoc, doc, query, where } from "firebase/firestore";
+import { collection, addDoc, getDocs, updateDoc, doc, query, where, orderBy } from "firebase/firestore";
+import { serverTimestamp } from "firebase/firestore";
 
 // 新增一篇文章
-export async function createPost(imageUrl, description) {
-  const postsRef = collection(db, "posts");
-  const createdAt = new Date();
+export const createPost = async (imageUrl, description) => {
+  const user = auth.currentUser;
+  if (!user) throw new Error("尚未登入");
 
-  await addDoc(postsRef, {
+  const newPost = {
+    userId: user.uid,
     imageUrl,
     description,
+    createdAt: serverTimestamp(),
     liked_bies: 0,
     favored_bies: 0,
     comments: 0,
-    createdAt,
-  });
-}
+  };
+
+  const docRef = await addDoc(collection(db, "posts"), newPost);
+  return docRef.id;
+};
 
 // 載入所有文章
+
 export async function loadPosts(searchTerm = "") {
   const postsRef = collection(db, "posts");
-  let q = postsRef;
+  let q;
 
   if (searchTerm) {
-    q = query(postsRef, where("description", ">=", searchTerm), where("description", "<=", searchTerm + "\uf8ff"));
+    q = query(
+      postsRef,
+      where("description", ">=", searchTerm),
+      where("description", "<=", searchTerm + "\uf8ff")
+    );
+  } else {
+    q = query(postsRef); // ⚡ 一定要包成 query
   }
 
   const querySnapshot = await getDocs(q);
@@ -37,8 +49,9 @@ export async function loadPosts(searchTerm = "") {
 // 按讚
 export async function likePost(postId) {
   const postRef = doc(db, "posts", postId);
-  const postSnapshot = await getDocs(collection(db, "posts"));
-  const postData = postSnapshot.docs.find(doc => doc.id === postId)?.data();
+
+  const postSnapshot = await getDoc(postRef); // ← 這裡你之前是 getDocs() 其實應該是 getDoc()
+  const postData = postSnapshot.data();
 
   if (!postData) return false;
 
@@ -50,8 +63,9 @@ export async function likePost(postId) {
 // 收藏
 export async function favorPost(postId) {
   const postRef = doc(db, "posts", postId);
-  const postSnapshot = await getDocs(collection(db, "posts"));
-  const postData = postSnapshot.docs.find(doc => doc.id === postId)?.data();
+
+  const postSnapshot = await getDoc(postRef); // 同樣這裡 getDoc()
+  const postData = postSnapshot.data();
 
   if (!postData) return false;
 
